@@ -1,21 +1,13 @@
-# Copyright (C) 1883 Thomas Edison - All Rights Reserved
-# You may use, distribute and modify this code under the
-# terms of the GPLv3 license, which unfortunately won't be
-# written for another century.
-#
-# You should have received a copy of the LICENSE file with
-# this file. 
-
 find_package(CUDA REQUIRED)
 
-set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--ptxas-options=-v;-use_fast_math;--std=c++17;-Wno-deprecated-gpu-targets)
+set(CUDA_NVCC_FLAGS ${CUDA_NVCC_FLAGS};--ptxas-options=-v;-use_fast_math)
 
 if (NOT MSVC)
 	list(APPEND CUDA_NVCC_FLAGS "--disable-warnings")
 endif()
 
 list(APPEND CUDA_NVCC_FLAGS_RELEASE -O3)
-list(APPEND CUDA_NVCC_FLAGS_DEBUG -O3)
+list(APPEND CUDA_NVCC_FLAGS_DEBUG -G)
 
 if(COMPUTE AND (COMPUTE GREATER 0))
 	list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_${COMPUTE},code=sm_${COMPUTE}")
@@ -47,10 +39,11 @@ else()
 	endif()
 endif()
 
+
 file(GLOB sources "*.cpp" "*.cu")
 file(GLOB headers "*.h" "*.cuh")
 
-cuda_add_library(cuda STATIC ${sources} ${headers})
-target_link_libraries(cuda eth Boost::thread ethash)
-target_include_directories(cuda PUBLIC ${CUDA_INCLUDE_DIRS})
-target_include_directories(cuda PRIVATE .. ${CMAKE_CURRENT_BINARY_DIR})
+cuda_add_library(ethash-cuda STATIC ${sources} ${headers})
+target_link_libraries(ethash-cuda ethcore ethash::ethash Boost::thread)
+target_include_directories(ethash-cuda PUBLIC ${CUDA_INCLUDE_DIRS})
+target_include_directories(ethash-cuda PRIVATE .. ${CMAKE_CURRENT_BINARY_DIR})
