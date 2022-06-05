@@ -24,6 +24,7 @@ else()
 		# Volta
 		list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_70,code=sm_70")
 		list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_70,code=sm_72")
+		list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_86,code=sm_86")
 		if(CUDA_VERSION VERSION_GREATER_EQUAL 10.0)
 			# Turing
 			list(APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_75,code=sm_75")
